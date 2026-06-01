@@ -1,0 +1,25 @@
+# Rust build output
+/target/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs/temp
+*.log
+/tmp/
+
+# Local env
+.env
+.env.*
+
+# Generated screenshots
+*.png

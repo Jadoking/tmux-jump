@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BIN="$DIR/target/release/tmux-session-switch"
+if [[ -x "$BIN" ]]; then
+  exec "$BIN" "$@"
+fi
+cat >&2 <<EOF
+tmux-session-switch has not been built yet.
+
+Install Rust, then run:
+  cd $DIR
+  cargo build --release
+EOF
+exit 1
