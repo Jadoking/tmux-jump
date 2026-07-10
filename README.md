@@ -1,4 +1,4 @@
-# tmux-session-switch
+# tmux-jump
 
 A fast Rust-powered tmux popup for switching sessions and launching new sessions from directories.
 
@@ -6,52 +6,45 @@ A fast Rust-powered tmux popup for switching sessions and launching new sessions
 
 - `tmux display-popup` overlay
 - Split layout:
-  - top-left: directory picker/search + new session name
-  - bottom-left: existing tmux sessions
+  - top-left: existing tmux sessions
+  - bottom-left: directory picker/search + new session name
   - right: preview/details
 - Create a new tmux session from a selected directory
-- Switch to existing sessions
-- Cached directory index for fast searching
-- Cyberdyne-inspired terminal UI
+- Switch to existing sessions, ordered by recent activity
+- Fuzzy search across session names, commands, and directories
+- Rename or kill sessions from the popup
+- Cached directory index with manual background refresh
+- Scrollable live pane previews
+- Adaptive monochrome UI that inherits terminal colors
 
 ## Requirements
 
 - tmux 3.2+ for `display-popup`
 - Rust toolchain for building from source
 
-Install Rust if needed:
-
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-
 ## Install with TPM
-
-You do **not** need to register the plugin anywhere for TPM. TPM can install directly from GitHub.
 
 Add this to `~/.tmux.conf`:
 
 ```tmux
-set -g @plugin 'Jadoking/tmux-session-switch'
+set -g @plugin 'Jadoking/tmux-jump'
 
 # Optional settings
-set -g @tmux-session-switch-key 'T'
-set -g @tmux-session-switch-width '90%'
-set -g @tmux-session-switch-height '85%'
+set -g @tmux-jump-key 'T'
+set -g @tmux-jump-width '90%'
+set -g @tmux-jump-height '85%'
 ```
 
-Then press:
+Then press `prefix + I`.
 
-```text
-prefix + I
-```
-
-Build the binary after TPM installs it:
+The first launch builds the release binary automatically when Cargo is available. You can also build it explicitly:
 
 ```bash
-cd ~/.tmux/plugins/tmux-session-switch
+cd ~/.tmux/plugins/tmux-jump
 cargo build --release
 ```
+
+Tagged releases provide binaries for Linux x86_64 and macOS Intel/Apple Silicon.
 
 Reload tmux:
 
@@ -59,29 +52,20 @@ Reload tmux:
 tmux source-file ~/.tmux.conf
 ```
 
-Default binding:
-
-```text
-prefix + T
-```
+Default binding: `prefix + T`.
 
 ## Manual install / build from source
 
 ```bash
-git clone git@github.com:Jadoking/tmux-session-switch.git ~/dev/tmux-session-switch
-cd ~/dev/tmux-session-switch
+git clone git@github.com:Jadoking/tmux-jump.git ~/dev/tmux-jump
+cd ~/dev/tmux-jump
 cargo build --release
 ```
 
 Add to `~/.tmux.conf`:
 
 ```tmux
-run-shell ~/dev/tmux-session-switch/tmux-session-switch.tmux
-
-# Optional settings
-set -g @tmux-session-switch-key 'T'
-set -g @tmux-session-switch-width '90%'
-set -g @tmux-session-switch-height '85%'
+run-shell ~/dev/tmux-jump/tmux-jump.tmux
 ```
 
 Reload tmux:
@@ -92,26 +76,25 @@ tmux source-file ~/.tmux.conf
 
 ## Usage
 
-Open the popup:
-
-```text
-prefix + T
-```
+Open the popup: `prefix + T`.
 
 Keys:
 
-- `Up/Down`: move selection; overflow between directory and session boxes
+- `Up/Down`: move selection; overflow between session and directory boxes
 - `Left/Right`: collapse/expand directories
-- `Tab`: in the directory box, switch between directory search and new session name
-- `Enter`: create/switch session from selected directory, or switch selected existing session
-- `Esc`: close popup
+- `Tab`: switch between directory search and new session name
+- `Enter`: create or switch session
+- `Ctrl-R`: rename selected session
+- `Ctrl-D`: kill selected session with confirmation
+- `Ctrl-N`: focus new-session input
+- `Ctrl-U`: rebuild the directory cache in the background
+- `PageUp/PageDown`: scroll the pane preview
+- `Esc`: cancel an action or close the popup
 
 ## Directory cache
 
 Directory search uses a bounded persistent cache:
 
 ```text
-~/.cache/tmux-session-switch/dirs.txt
+~/.cache/tmux-jump/dirs.txt
 ```
-
-The cache is capped at 25,000 directories and refreshed in the background while the popup is open when stale. It excludes noisy/heavy directories like `.git`, `node_modules`, `target`, `Library`, and caches.

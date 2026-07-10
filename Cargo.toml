@@ -1,5 +1,5 @@
 [package]
-name = "tmux-session-switch"
+name = "tmux-jump"
 version = "0.1.0"
 edition = "2021"
 description = "Telescope-style tmux session/directory switcher"
@@ -9,4 +9,3 @@ license = "MIT"
 anyhow = "1"
 crossterm = "0.27"
 ratatui = "0.26"
-ansi-to-tui = "3"

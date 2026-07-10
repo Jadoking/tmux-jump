@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+BINARY="$ROOT/target/release/tmux-jump"
+
+if [[ ! -x "$BINARY" ]]; then
+  if ! command -v cargo >/dev/null 2>&1; then
+    cat >&2 <<EOF
+tmux-jump has not been built yet and Cargo is unavailable.
+
+Install Rust, then run:
+  cd "$ROOT"
+  cargo build --release
+
+Alternatively, install a matching binary from:
+  https://github.com/Jadoking/tmux-jump/releases
+EOF
+    exit 1
+  fi
+  echo "tmux-jump: building the local release binary…" >&2
+  cargo build --release --manifest-path "$ROOT/Cargo.toml" >&2
+fi
+
+exec "$BINARY" "$@"
